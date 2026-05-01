@@ -19,7 +19,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 if (connectionString.StartsWith("postgres://") || connectionString.StartsWith("postgresql://"))
 {
     var uri = new Uri(connectionString);
-    var npgsqlConn = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    var npgsqlConn = $"Host={uri.Host};Port={port};Database={uri.AbsolutePath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(npgsqlConn));
 }
