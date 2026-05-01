@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: homeiot-api
+    runtime: docker
+    dockerfilePath: ./HomeIotDevice.Api/Dockerfile
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: ConnectionStrings__DefaultConnection
+        value: Data Source=HomeIotDevice.db
+      - key: Jwt__Secret
+        value: YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+      - key: Jwt__Issuer
+        value: HomeIotDevice
+      - key: Jwt__Audience
+        value: HomeIotDeviceApp
+      - key: Mqtt__Broker
+        value: broker.hivemq.com
+      - key: Mqtt__Port
+        value: "1883"
