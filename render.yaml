@@ -1,3 +1,9 @@
+databases:
+  - name: homeiot-db
+    plan: free
+    databaseName: homeiot
+    user: homeiot_user
+
 services:
   - type: web
     name: homeiot-api
@@ -7,7 +13,9 @@ services:
     plan: free
     envVars:
       - key: ConnectionStrings__DefaultConnection
-        value: Data Source=HomeIotDevice.db
+        fromDatabase:
+          name: homeiot-db
+          property: connectionString
       - key: Jwt__Secret
         value: YourSuperSecretKeyThatIsAtLeast32CharactersLong!
       - key: Jwt__Issuer
