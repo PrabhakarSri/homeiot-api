@@ -12,11 +12,12 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Database — PostgreSQL for production, SQLite for local dev
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+// Database — PostgreSQL if available, otherwise SQLite
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? "Data Source=HomeIotDevice.db";
+
 if (connectionString.StartsWith("postgres://") || connectionString.StartsWith("postgresql://"))
 {
-    // Convert Render's postgres:// URL to Npgsql format
     var uri = new Uri(connectionString);
     var npgsqlConn = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
     builder.Services.AddDbContext<AppDbContext>(options =>
